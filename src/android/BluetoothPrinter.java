@@ -21,6 +21,9 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Handler;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import android.app.Activity;
