@@ -1,4 +1,4 @@
-package com.ru.cordova.printer.bluetooth;
+package com.josservices.cordova.plugins.bluetooth;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -44,13 +44,33 @@ public class BluetoothPrinter extends CordovaPlugin {
 	int readBufferPosition;
 	int counter;
 	volatile boolean stopWorker;
-
+	CallbackContext mCallbackContext;
 	Bitmap bitmap;
+	private static final int REQUEST_ENABLE_BT = 2;
+	BluetoothService mService = null;
+	BluetoothDevice con_dev = null;
+	private static final int REQUEST_CONNECT_DEVICE = 1;
 
 	public BluetoothPrinter() {}
 
 	@Override
+	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+    	super.initialize(cordova, webView);
+    	Context ctx = cordova.getActivity().getApplicationContext();
+    	mService = new BluetoothService(ctx, mHandler);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (mService != null) 
+			mService.stop();
+		mService = null; 
+	}
+
+	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+		this.mCallbackContext = callbackContext;
 		if (action.equals("list")) {
 			listBT(callbackContext);
 			return true;
@@ -99,23 +119,54 @@ public class BluetoothPrinter extends CordovaPlugin {
 		return false;
 	}
 
+	private final  Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case BluetoothService.MESSAGE_STATE_CHANGE:
+                switch (msg.arg1) {
+                case BluetoothService.STATE_CONNECTED:   
+                	Toast.makeText(getApplicationContext(), "Connect successful",
+                            Toast.LENGTH_SHORT).show();
+        			btnClose.setEnabled(true);
+        			btnSend.setEnabled(true);
+        			btnSendDraw.setEnabled(true);
+                    break;
+                case BluetoothService.STATE_CONNECTING: 
+                	Log.d("À¶ÑÀµ÷ÊÔ","ÕýÔÚÁ¬½Ó.....");
+                    break;
+                case BluetoothService.STATE_LISTEN:    
+                case BluetoothService.STATE_NONE:
+                	Log.d("À¶ÑÀµ÷ÊÔ","µÈ´ýÁ¬½Ó.....");
+                    break;
+                }
+                break;
+            case BluetoothService.MESSAGE_CONNECTION_LOST:   
+                Toast.makeText(getApplicationContext(), "Device connection was lost",
+                               Toast.LENGTH_SHORT).show();
+    			btnClose.setEnabled(false);
+    			btnSend.setEnabled(false);
+    			btnSendDraw.setEnabled(false);
+                break;
+            case BluetoothService.MESSAGE_UNABLE_CONNECT:    
+            	Toast.makeText(getApplicationContext(), "Unable to connect device",
+                        Toast.LENGTH_SHORT).show();
+            	break;
+            }
+        }
+        
+    };
+
     //This will return the array list of paired bluetooth printers
 	void listBT(CallbackContext callbackContext) {
 		BluetoothAdapter mBluetoothAdapter = null;
 		String errMsg = null;
 		try {
-			mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-			if (mBluetoothAdapter == null) {
-				errMsg = "No bluetooth adapter available";
-				Log.e(LOG_TAG, errMsg);
-				callbackContext.error(errMsg);
-				return;
-			}
-			if (!mBluetoothAdapter.isEnabled()) {
+			if (!mService.isEnabled()) {
 				Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 				this.cordova.getActivity().startActivityForResult(enableBluetooth, 0);
 			}
-			Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+			Set<BluetoothDevice> pairedDevices = mService.getPairedDev();
 			if (pairedDevices.size() > 0) {
 				JSONArray json = new JSONArray();
 				for (BluetoothDevice device : pairedDevices) {
