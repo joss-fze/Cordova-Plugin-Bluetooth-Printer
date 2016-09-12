@@ -129,7 +129,7 @@ public class BluetoothPrinter extends CordovaPlugin {
             case BluetoothService.MESSAGE_STATE_CHANGE:
                 switch (msg.arg1) {
                 case BluetoothService.STATE_CONNECTED:   
-                	mCallbackContext.success({"message" : "Connect successful"});
+                	mCallbackContext.success("Connect successful");
                     break;
                 case BluetoothService.STATE_CONNECTING: 
                 	Log.d("À¶ÑÀµ÷ÊÔ","ÕýÔÚÁ¬½Ó.....");
@@ -141,11 +141,11 @@ public class BluetoothPrinter extends CordovaPlugin {
                 }
                 break;
             case BluetoothService.MESSAGE_CONNECTION_LOST:   
-                mCallbackContext.success({"message" :  "Device connection was lost"});
+                mCallbackContext.success("Device connection was lost");
 
                 break;
             case BluetoothService.MESSAGE_UNABLE_CONNECT:    
-            	mCallbackContext.error({"message" :  "Unable to connect device"});
+            	mCallbackContext.error("Unable to connect device");
             	break;
             }
         }
