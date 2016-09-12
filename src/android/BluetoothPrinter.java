@@ -10,6 +10,8 @@ import java.util.UUID;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -127,11 +129,7 @@ public class BluetoothPrinter extends CordovaPlugin {
             case BluetoothService.MESSAGE_STATE_CHANGE:
                 switch (msg.arg1) {
                 case BluetoothService.STATE_CONNECTED:   
-                	Toast.makeText(getApplicationContext(), "Connect successful",
-                            Toast.LENGTH_SHORT).show();
-        			btnClose.setEnabled(true);
-        			btnSend.setEnabled(true);
-        			btnSendDraw.setEnabled(true);
+                	mCallbackContext.success({"message" : "Connect successful"});
                     break;
                 case BluetoothService.STATE_CONNECTING: 
                 	Log.d("À¶ÑÀµ÷ÊÔ","ÕýÔÚÁ¬½Ó.....");
@@ -143,15 +141,11 @@ public class BluetoothPrinter extends CordovaPlugin {
                 }
                 break;
             case BluetoothService.MESSAGE_CONNECTION_LOST:   
-                Toast.makeText(getApplicationContext(), "Device connection was lost",
-                               Toast.LENGTH_SHORT).show();
-    			btnClose.setEnabled(false);
-    			btnSend.setEnabled(false);
-    			btnSendDraw.setEnabled(false);
+                mCallbackContext.success({"message" :  "Device connection was lost"});
+
                 break;
             case BluetoothService.MESSAGE_UNABLE_CONNECT:    
-            	Toast.makeText(getApplicationContext(), "Unable to connect device",
-                        Toast.LENGTH_SHORT).show();
+            	mCallbackContext.error({"message" :  "Unable to connect device"});
             	break;
             }
         }
