@@ -10,7 +10,7 @@ A cordova android platform plugin for bluetooth printer.
 Using the Cordova CLI and NPM, run:
 
 ```
-cordova plugin add https://github.com/srehanuddin/Cordova-Plugin-Bluetooth-Printer.git
+cordova plugin add https://github.com/joss-fze/Cordova-Plugin-Bluetooth-Printer
 ```
 
 
