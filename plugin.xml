@@ -35,6 +35,6 @@
       </config-file>
 
       <source-file src="src/android/BluetoothPrinter.java" target-dir="src/com/josservices/cordova/plugins/bluetooth" />
-
+      <source-file src="src/android/BluetoothService.java" target-dir="src/com/josservices/cordova/plugins/bluetooth" />
    </platform>
 </plugin>
