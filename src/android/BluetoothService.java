@@ -1,4 +1,4 @@
-package package com.josservices.cordova.plugins.bluetooth;
+package com.josservices.cordova.plugins.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
