@@ -282,7 +282,7 @@ public class BluetoothService
     }
 
     public void cancel() {
-/* 348 */       Log.d(LOG_TAG,LOG_TAG, "cancel " + this);
+/* 348 */       Log.d(LOG_TAG, "cancel " + this);
       try {
 /* 350 */         this.mmServerSocket.close();
       } catch (IOException e) {
@@ -371,7 +371,7 @@ public class BluetoothService
     }
 
     public void run() {
-/* 452 */       Log.d(LOG_TAG,"ConnectedThread线程运行", "正在运行......");
+/* 452 */       Log.d(LOG_TAG,"ConnectedThrea.....");
 /* 453 */       Log.i(LOG_TAG, "BEGIN mConnectedThread");
       try
       {

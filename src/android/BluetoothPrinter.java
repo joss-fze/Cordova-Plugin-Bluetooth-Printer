@@ -120,10 +120,10 @@ public class BluetoothPrinter extends CordovaPlugin {
 						Log.e(LOG_TAG, "Something went wrong while reaading paired BT devices: "+errMsg);
 						e.printStackTrace();
 						callbackContext.error(errMsg);
-					}
-					return true;
+					}					
 				}
 			});
+			return true;
 		} else if (action.equals("connect")) {
 			Log.v(LOG_TAG, "Received BT connect command");
 			cordova.getThreadPool().execute(new Runnable() {
@@ -139,7 +139,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 				}
 			});
 			return true;
-			
+
 		} else if (action.equals("disconnect")) {
             try {
                 disconnectBT(callbackContext);
