@@ -567,7 +567,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 
 
 	class LoggerHelper extends Thread{
-	 List<Object>  objs = "something" ;//init it
+	 //List<Object>  objs = "something" ;//init it
 	 BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
 	 public void run(){
 	     while(true){
