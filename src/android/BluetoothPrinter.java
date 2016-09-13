@@ -92,7 +92,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 					try {
 						if (!mService.isBTopen()) {
 							Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-							this.cordova.getActivity().startActivityForResult(enableBluetooth, 0);
+							cordova.getActivity().startActivityForResult(enableBluetooth, 0);
 						}
 						Set<BluetoothDevice> pairedDevices = mService.getPairedDev();
 						
