@@ -82,7 +82,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 	}
 
 	@Override
-	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
 		this.mCallbackContext = callbackContext;
 		if (action.equals("list")) {
 			 cordova.getThreadPool().execute(new Runnable() {
