@@ -568,10 +568,10 @@ public class BluetoothPrinter extends CordovaPlugin {
 
 	class LoggerHelper extends Thread{
 	 List<Object>  objs = "something" ;//init it
-	 BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+	 BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
 	 public void run(){
 	     while(true){
-	       Message msg;
+	       String msg;
 	       while ((msg = queue.poll()) != null) {
 	        webView.loadUrl("javascript:console.log('Plugin logger: "+msg+"');");
 	       }
