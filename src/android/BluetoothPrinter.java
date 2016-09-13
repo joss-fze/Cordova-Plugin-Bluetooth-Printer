@@ -87,15 +87,31 @@ public class BluetoothPrinter extends CordovaPlugin {
 		if (action.equals("list")) {
 			 cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
-					listBT(callbackContext);
+                	try {
+						listBT(callbackContext);
+					} catch (JSONException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    } catch (IOException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    }
 				}
 			});
 		} else if (action.equals("connect")) {
 			cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
-					String name = args.getString(0);
-					BluetoothDevice device = mService.getDevByName(name);
-					mService.connect(device);
+                	try {
+						String name = args.getString(0);
+						BluetoothDevice device = mService.getDevByName(name);
+						mService.connect(device);
+					} catch (JSONException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    } catch (IOException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    }
 				}
 			});
 		} else if (action.equals("disconnect")) {
