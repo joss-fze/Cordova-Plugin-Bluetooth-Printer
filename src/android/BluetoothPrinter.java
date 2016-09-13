@@ -171,7 +171,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 					map.put("name", device.getName());
 					JSONObject jObj = new JSONObject(map);
 					*/
-					m//WebView.loadUrl("javascript:console.log('Found this device: '"+device.getName()+"');");
+					//mWebView.loadUrl("javascript:console.log('Found this device: '"+device.getName()+"');");
 					json.put(device.getName());
 				}
 				callbackContext.success(json);
