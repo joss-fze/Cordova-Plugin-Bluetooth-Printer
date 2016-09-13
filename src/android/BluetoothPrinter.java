@@ -66,7 +66,7 @@ public class BluetoothPrinter extends CordovaPlugin {
     	mService = new BluetoothService(ctx, mHandler);
 	}
 
-	protected void onDestroy() {
+	public void onDestroy() {
 		super.onDestroy();
 		if (mService != null) 
 			mService.stop();
