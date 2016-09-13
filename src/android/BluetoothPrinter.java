@@ -85,6 +85,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
 		this.mCallbackContext = callbackContext;
 		if (action.equals("list")) {
+			Log.v(LOG_TAG, "Received BT list command");
 			 cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
 
@@ -120,10 +121,11 @@ public class BluetoothPrinter extends CordovaPlugin {
 						e.printStackTrace();
 						callbackContext.error(errMsg);
 					}
-
+					return true;
 				}
 			});
 		} else if (action.equals("connect")) {
+			Log.v(LOG_TAG, "Received BT connect command");
 			cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
                 	try {
@@ -136,6 +138,8 @@ public class BluetoothPrinter extends CordovaPlugin {
                     } 
 				}
 			});
+			return true;
+			
 		} else if (action.equals("disconnect")) {
             try {
                 disconnectBT(callbackContext);

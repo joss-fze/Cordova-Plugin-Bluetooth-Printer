@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class BluetoothService
 {
-  private static final String TAG = "BluetoothService";
+  private static final String LOG_TAG = "BluetoothPrinterPlugin";
   private static final boolean D = true;
   public static final int MESSAGE_STATE_CHANGE = 1;
   public static final int MESSAGE_READ = 2;
@@ -137,7 +137,7 @@ public class BluetoothService
 
   public synchronized void start()
   {
-/* 167 */     Log.d("BluetoothService", "start");
+/* 167 */     Log.d(LOG_TAG, "start");
 
 /* 170 */     if (this.mConnectThread != null) { this.mConnectThread.cancel(); this.mConnectThread = null;
     }
@@ -154,7 +154,7 @@ public class BluetoothService
 
   public synchronized void connect(BluetoothDevice device)
   {
-     Log.d("BluetoothService", "connect to: " + device);
+     Log.d(LOG_TAG, "connect to: " + device);
 
     if ((this.mState == 2) && 
        (this.mConnectThread != null)) { this.mConnectThread.cancel(); this.mConnectThread = null;
@@ -170,7 +170,7 @@ public class BluetoothService
 
   public synchronized void connected(BluetoothSocket socket, BluetoothDevice device)
   {
-     Log.d("BluetoothService", "connected");
+     Log.d(LOG_TAG, "connected");
 
      if (this.mConnectThread != null) { this.mConnectThread.cancel(); this.mConnectThread = null;
     }
@@ -193,7 +193,7 @@ public class BluetoothService
 
   public synchronized void stop()
   {
-/* 237 */     Log.d("BluetoothService", "stop");
+/* 237 */     Log.d(LOG_TAG, "stop");
 /* 238 */     setState(0);
 /* 239 */     if (this.mConnectThread != null) { this.mConnectThread.cancel(); this.mConnectThread = null; }
 /* 240 */     if (this.mConnectedThread != null) { this.mConnectedThread.cancel(); this.mConnectedThread = null; }
@@ -236,24 +236,24 @@ public class BluetoothService
       {
         tmp = BluetoothService.this.mAdapter.listenUsingRfcommWithServiceRecord("BTPrinter", BluetoothService.MY_UUID);
       } catch (IOException e) {
-         Log.e("BluetoothService", "listen() failed", e);
+         Log.e(LOG_TAG, "listen() failed", e);
       }
       this.mmServerSocket = tmp;
     }
 
     public void run()
     {
-      Log.d("BluetoothService", "BEGIN mAcceptThread" + this);
+      Log.d(LOG_TAG, "BEGIN mAcceptThread" + this);
       setName("AcceptThread");
       BluetoothSocket socket = null;
 
       while (BluetoothService.this.mState != 3) {
-        Log.d("AcceptThread线程运行", "正在运行......");
+        Log.d(LOG_TAG,"AcceptThread.....started");
         try
         {
            socket = this.mmServerSocket.accept();
         } catch (IOException e) {
-          Log.e("BluetoothService", "accept() failed", e);
+          Log.e(LOG_TAG, "accept() failed", e);
            break;
         }
 
@@ -271,22 +271,22 @@ public class BluetoothService
               {
                 socket.close();
               } catch (IOException e) {
-                Log.e("BluetoothService", "Could not close unwanted socket", e);
+                Log.e(LOG_TAG, "Could not close unwanted socket", e);
               }
             }
           }
         }
       }
 
-/* 344 */       Log.i("BluetoothService", "END mAcceptThread");
+/* 344 */       Log.i(LOG_TAG, "END mAcceptThread");
     }
 
     public void cancel() {
-/* 348 */       Log.d("BluetoothService", "cancel " + this);
+/* 348 */       Log.d(LOG_TAG,LOG_TAG, "cancel " + this);
       try {
 /* 350 */         this.mmServerSocket.close();
       } catch (IOException e) {
-/* 352 */         Log.e("BluetoothService", "close() of server failed", e);
+/* 352 */         Log.e(LOG_TAG, "close() of server failed", e);
       }
     }
   }
@@ -304,13 +304,13 @@ public class BluetoothService
       {
 /* 374 */         tmp = device.createRfcommSocketToServiceRecord(BluetoothService.MY_UUID);
       } catch (IOException e) {
-/* 376 */         Log.e("BluetoothService", "create() failed", e);
+/* 376 */         Log.e(LOG_TAG, "create() failed", e);
       }
 /* 378 */       this.mmSocket = tmp;
     }
 
     public void run() {
-/* 382 */       Log.i("BluetoothService", "BEGIN mConnectThread");
+/* 382 */       Log.i(LOG_TAG, "BEGIN mConnectThread");
 /* 383 */       setName("ConnectThread");
 
 /* 386 */       BluetoothService.this.mAdapter.cancelDiscovery();
@@ -323,7 +323,7 @@ public class BluetoothService
         {
 /* 397 */           this.mmSocket.close();
         } catch (IOException e2) {
-/* 399 */           Log.e("BluetoothService", "unable to close() socket during connection failure", e2);
+/* 399 */           Log.e(LOG_TAG, "unable to close() socket during connection failure", e2);
         }
 
 /* 402 */         BluetoothService.this.start();
@@ -341,7 +341,7 @@ public class BluetoothService
       try {
 /* 417 */         this.mmSocket.close();
       } catch (IOException e) {
-/* 419 */         Log.e("BluetoothService", "close() of connect socket failed", e);
+/* 419 */         Log.e(LOG_TAG, "close() of connect socket failed", e);
       }
     }
   }
@@ -354,7 +354,7 @@ public class BluetoothService
 
     public ConnectedThread(BluetoothSocket socket)
     {
-/* 434 */       Log.d("BluetoothService", "create ConnectedThread");
+/* 434 */       Log.d(LOG_TAG, "create ConnectedThread");
 /* 435 */       this.mmSocket = socket;
 /* 436 */       InputStream tmpIn = null;
 /* 437 */       OutputStream tmpOut = null;
@@ -363,7 +363,7 @@ public class BluetoothService
 /* 441 */         tmpIn = socket.getInputStream();
 /* 442 */         tmpOut = socket.getOutputStream();
       } catch (IOException e) {
-/* 444 */         Log.e("BluetoothService", "temp sockets not created", e);
+/* 444 */         Log.e(LOG_TAG, "temp sockets not created", e);
       }
 
 /* 447 */       this.mmInStream = tmpIn;
@@ -371,8 +371,8 @@ public class BluetoothService
     }
 
     public void run() {
-/* 452 */       Log.d("ConnectedThread线程运行", "正在运行......");
-/* 453 */       Log.i("BluetoothService", "BEGIN mConnectedThread");
+/* 452 */       Log.d(LOG_TAG,"ConnectedThread线程运行", "正在运行......");
+/* 453 */       Log.i(LOG_TAG, "BEGIN mConnectedThread");
       try
       {
         while (true)
@@ -387,19 +387,19 @@ public class BluetoothService
 /* 466 */             .sendToTarget();
         }
 
-/* 470 */         Log.e("BluetoothService", "disconnected");
+/* 470 */         Log.e(LOG_TAG, "disconnected");
 /* 471 */         BluetoothService.this.connectionLost();
 
 /* 474 */         if (BluetoothService.this.mState != 0)
         {
-/* 476 */           Log.e("BluetoothService", "disconnected");
+/* 476 */           Log.e(LOG_TAG, "disconnected");
 
 /* 478 */           BluetoothService.this.start();
         }
       }
       catch (IOException e)
       {
-/* 483 */         Log.e("BluetoothService", "disconnected", e);
+/* 483 */         Log.e(LOG_TAG, "disconnected", e);
 /* 484 */         BluetoothService.this.connectionLost();
 
 /* 487 */         if (BluetoothService.this.mState != 0)
@@ -418,7 +418,7 @@ public class BluetoothService
 /* 506 */         BluetoothService.this.mHandler.obtainMessage(3, -1, -1, buffer)
 /* 507 */           .sendToTarget();
       } catch (IOException e) {
-/* 509 */         Log.e("BluetoothService", "Exception during write", e);
+/* 509 */         Log.e(LOG_TAG, "Exception during write", e);
       }
     }
 
@@ -426,7 +426,7 @@ public class BluetoothService
       try {
 /* 515 */         this.mmSocket.close();
       } catch (IOException e) {
-/* 517 */         Log.e("BluetoothService", "close() of connect socket failed", e);
+/* 517 */         Log.e(LOG_TAG, "close() of connect socket failed", e);
       }
     }
   }
