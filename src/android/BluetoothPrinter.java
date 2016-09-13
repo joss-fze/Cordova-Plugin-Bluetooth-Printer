@@ -58,7 +58,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 	BluetoothService mService = null;
 	BluetoothDevice con_dev = null;
 	private static final int REQUEST_CONNECT_DEVICE = 1;
-
+	private LoggerHelper cordovaLog = new LoggerHelper();
 	public BluetoothPrinter() {}
 
 	@Override
@@ -68,6 +68,8 @@ public class BluetoothPrinter extends CordovaPlugin {
     	this.mWebView = webView;
     	Context ctx = cordova.getActivity().getApplicationContext();
     	mService = new BluetoothService(ctx, mHandler);
+    	cordova.getThreadPool().execute(cordovaLog);
+    	cordovaLog.queue.put("Starting BT plugin");
 	}
 
 	public void onDestroy() {
@@ -561,4 +563,17 @@ public class BluetoothPrinter extends CordovaPlugin {
 	}
 
 
+	class LoggerHelper extends Thread{
+	 List<Object>  objs = "something" ;//init it
+	 BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
+	 void run(){
+	     while(true){
+	       Message msg;
+	       while ((msg = queue.poll()) != null) {
+	        webView.loadUrl("javascript:console.log('Plugin logger: "+msg+"');");
+	       }
+	       // do other stuff
+	     }
+	   }
+}
 }
