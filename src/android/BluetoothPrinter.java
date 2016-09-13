@@ -42,7 +42,7 @@ import android.util.Base64;
 import com.josservices.cordova.plugins.bluetooth.BluetoothService;
 
 public class BluetoothPrinter extends CordovaPlugin {
-	private static final String LOG_TAG = "BluetoothPrinter";
+	private static final String LOG_TAG = "BluetoothPrinterPlugin";
 	BluetoothAdapter mBluetoothAdapter;
 	BluetoothSocket mmSocket;
 	BluetoothDevice mmDevice;
@@ -61,9 +61,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 	BluetoothService mService = null;
 	BluetoothDevice con_dev = null;
 	private static final int REQUEST_CONNECT_DEVICE = 1;
-	private LoggerHelper cordovaLog = new LoggerHelper();
 	public BluetoothPrinter() {}
-	public static final String LOG_TAG = "BluetoothPlugin";
 
 	@Override
 	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -91,7 +89,6 @@ public class BluetoothPrinter extends CordovaPlugin {
 			 cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
 					listBT(callbackContext);
-					return true;
 				}
 			});
 		} else if (action.equals("connect")) {
@@ -100,7 +97,6 @@ public class BluetoothPrinter extends CordovaPlugin {
 					String name = args.getString(0);
 					BluetoothDevice device = mService.getDevByName(name);
 					mService.connect(device);
-					return true;
 				}
 			});
 		} else if (action.equals("disconnect")) {
