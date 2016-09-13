@@ -69,7 +69,7 @@ public class BluetoothService
   public synchronized BluetoothDevice getDevByName(String name)
   {
 /*  92 */     BluetoothDevice tem_dev = null;
-/*  93 */     Set pairedDevices = getPairedDev();
+/*  93 */     Set<BluetoothDevice> pairedDevices = getPairedDev();
 /*  94 */     if (pairedDevices.size() > 0) {
 /*  95 */       for (BluetoothDevice device : pairedDevices) {
 /*  96 */         if (device.getName().indexOf(name) != -1) {
@@ -90,7 +90,6 @@ public class BluetoothService
       }
       catch (UnsupportedEncodingException e)
       {
-        byte[] send;
 /* 114 */         send = message.getBytes();
       }
 
@@ -209,7 +208,6 @@ public class BluetoothService
 /* 254 */       if (this.mState != 3) return;
 /* 255 */       r = this.mConnectedThread;
     }
-    ConnectedThread r;
 /* 258 */     r.write(out);
   }
 
