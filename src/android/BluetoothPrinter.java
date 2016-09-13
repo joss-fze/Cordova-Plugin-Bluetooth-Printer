@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.Set;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -566,7 +569,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 	class LoggerHelper extends Thread{
 	 List<Object>  objs = "something" ;//init it
 	 BlockingQueue<Message> queue = new LinkedBlockingQueue<Message>();
-	 void run(){
+	 public void run(){
 	     while(true){
 	       Message msg;
 	       while ((msg = queue.poll()) != null) {
