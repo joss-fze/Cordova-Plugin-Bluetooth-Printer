@@ -51,7 +51,9 @@ public class BluetoothPrinter extends CordovaPlugin {
 	int counter;
 	volatile boolean stopWorker;
 	CallbackContext mCallbackContext;
+	CordovaWebView mWebView;
 	Bitmap bitmap;
+	CordovaInterface cordova;
 	private static final int REQUEST_ENABLE_BT = 2;
 	BluetoothService mService = null;
 	BluetoothDevice con_dev = null;
@@ -62,6 +64,8 @@ public class BluetoothPrinter extends CordovaPlugin {
 	@Override
 	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
     	super.initialize(cordova, webView);
+    	this.cordova = cordova;
+    	this.mWebView = webView;
     	Context ctx = cordova.getActivity().getApplicationContext();
     	mService = new BluetoothService(ctx, mHandler);
 	}
@@ -81,16 +85,8 @@ public class BluetoothPrinter extends CordovaPlugin {
 			return true;
 		} else if (action.equals("connect")) {
 			String name = args.getString(0);
-			if (findBT(callbackContext, name)) {
-				try {
-					connectBT(callbackContext);
-				} catch (IOException e) {
-					Log.e(LOG_TAG, e.getMessage());
-					e.printStackTrace();
-				}
-			} else {
-				callbackContext.error("Bluetooth Device Not Found: " + name);
-			}
+			BluetoothDevice device = mService.getDevByName(name);
+			mService.connect(device);
 			return true;
 		} else if (action.equals("disconnect")) {
             try {
@@ -134,11 +130,11 @@ public class BluetoothPrinter extends CordovaPlugin {
                 	mCallbackContext.success("Connect successful");
                     break;
                 case BluetoothService.STATE_CONNECTING: 
-                	Log.d("À¶ÑÀµ÷ÊÔ","ÕýÔÚÁ¬½Ó.....");
+                	mWebView.loadUrl("javascript:console.log('STATE_CONNECTING');")
                     break;
                 case BluetoothService.STATE_LISTEN:    
                 case BluetoothService.STATE_NONE:
-                	Log.d("À¶ÑÀµ÷ÊÔ","µÈ´ýÁ¬½Ó.....");
+                	mWebView.loadUrl("javascript:console.log('STATE_NONE');")
                     break;
                 }
                 break;
@@ -164,6 +160,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 				this.cordova.getActivity().startActivityForResult(enableBluetooth, 0);
 			}
 			Set<BluetoothDevice> pairedDevices = mService.getPairedDev();
+			Log.d("Found these devices: "+pairedDevices.toString());
 			if (pairedDevices.size() > 0) {
 				JSONArray json = new JSONArray();
 				for (BluetoothDevice device : pairedDevices) {
@@ -219,27 +216,6 @@ public class BluetoothPrinter extends CordovaPlugin {
 		return false;
 	}
 
-	// Tries to open a connection to the bluetooth printer device
-	boolean connectBT(CallbackContext callbackContext) throws IOException {
-		try {
-			// Standard SerialPortService ID
-			UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-			mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-			mmSocket.connect();
-			mmOutputStream = mmSocket.getOutputStream();
-			mmInputStream = mmSocket.getInputStream();
-			beginListenForData();
-			//Log.d(LOG_TAG, "Bluetooth Opened: " + mmDevice.getName());
-			callbackContext.success("Bluetooth Opened: " + mmDevice.getName());
-			return true;
-		} catch (Exception e) {
-			String errMsg = e.getMessage();
-			Log.e(LOG_TAG, errMsg);
-			e.printStackTrace();
-			callbackContext.error(errMsg);
-		}
-		return false;
-	}
 
 	// After opening a connection to bluetooth printer device,
 	// we have to listen and check if a data were sent to be printed.

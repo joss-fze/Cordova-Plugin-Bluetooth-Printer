@@ -125,9 +125,9 @@ public class BluetoothService
 
   private synchronized void setState(int state)
   {
-/* 150 */     this.mState = state;
+    this.mState = state;
 
-/* 153 */     this.mHandler.obtainMessage(1, state, -1).sendToTarget();
+    this.mHandler.obtainMessage(1, state, -1).sendToTarget();
   }
 
   public synchronized int getState()
@@ -154,41 +154,41 @@ public class BluetoothService
 
   public synchronized void connect(BluetoothDevice device)
   {
-/* 188 */     Log.d("BluetoothService", "connect to: " + device);
+     Log.d("BluetoothService", "connect to: " + device);
 
-/* 191 */     if ((this.mState == 2) && 
-/* 192 */       (this.mConnectThread != null)) { this.mConnectThread.cancel(); this.mConnectThread = null;
+    if ((this.mState == 2) && 
+       (this.mConnectThread != null)) { this.mConnectThread.cancel(); this.mConnectThread = null;
     }
 
-/* 196 */     if (this.mConnectedThread != null) { this.mConnectedThread.cancel(); this.mConnectedThread = null;
+    if (this.mConnectedThread != null) { this.mConnectedThread.cancel(); this.mConnectedThread = null;
     }
 
-/* 199 */     this.mConnectThread = new ConnectThread(device);
-/* 200 */     this.mConnectThread.start();
-/* 201 */     setState(2);
+     this.mConnectThread = new ConnectThread(device);
+     this.mConnectThread.start();
+     setState(2);
   }
 
   public synchronized void connected(BluetoothSocket socket, BluetoothDevice device)
   {
-/* 210 */     Log.d("BluetoothService", "connected");
+     Log.d("BluetoothService", "connected");
 
-/* 213 */     if (this.mConnectThread != null) { this.mConnectThread.cancel(); this.mConnectThread = null;
+     if (this.mConnectThread != null) { this.mConnectThread.cancel(); this.mConnectThread = null;
     }
 
-/* 216 */     if (this.mConnectedThread != null) { this.mConnectedThread.cancel(); this.mConnectedThread = null;
+     if (this.mConnectedThread != null) { this.mConnectedThread.cancel(); this.mConnectedThread = null;
     }
 
-/* 219 */     if (this.mAcceptThread != null) { this.mAcceptThread.cancel(); this.mAcceptThread = null;
+     if (this.mAcceptThread != null) { this.mAcceptThread.cancel(); this.mAcceptThread = null;
     }
 
-/* 222 */     this.mConnectedThread = new ConnectedThread(socket);
-/* 223 */     this.mConnectedThread.start();
+    this.mConnectedThread = new ConnectedThread(socket);
+    this.mConnectedThread.start();
 
-/* 226 */     Message msg = this.mHandler.obtainMessage(4);
+    Message msg = this.mHandler.obtainMessage(4);
 
-/* 228 */     this.mHandler.sendMessage(msg);
+    this.mHandler.sendMessage(msg);
 
-/* 230 */     setState(3);
+    setState(3);
   }
 
   public synchronized void stop()
@@ -231,47 +231,47 @@ public class BluetoothService
 
     public AcceptThread()
     {
-/* 293 */       BluetoothServerSocket tmp = null;
+      BluetoothServerSocket tmp = null;
       try
       {
-/* 297 */         tmp = BluetoothService.this.mAdapter.listenUsingRfcommWithServiceRecord("BTPrinter", BluetoothService.MY_UUID);
+        tmp = BluetoothService.this.mAdapter.listenUsingRfcommWithServiceRecord("BTPrinter", BluetoothService.MY_UUID);
       } catch (IOException e) {
-/* 299 */         Log.e("BluetoothService", "listen() failed", e);
+         Log.e("BluetoothService", "listen() failed", e);
       }
-/* 301 */       this.mmServerSocket = tmp;
+      this.mmServerSocket = tmp;
     }
 
     public void run()
     {
-/* 306 */       Log.d("BluetoothService", "BEGIN mAcceptThread" + this);
-/* 307 */       setName("AcceptThread");
-/* 308 */       BluetoothSocket socket = null;
+      Log.d("BluetoothService", "BEGIN mAcceptThread" + this);
+      setName("AcceptThread");
+      BluetoothSocket socket = null;
 
-/* 311 */       while (BluetoothService.this.mState != 3) {
-/* 312 */         Log.d("AcceptThread线程运行", "正在运行......");
+      while (BluetoothService.this.mState != 3) {
+        Log.d("AcceptThread线程运行", "正在运行......");
         try
         {
-/* 316 */           socket = this.mmServerSocket.accept();
+           socket = this.mmServerSocket.accept();
         } catch (IOException e) {
-/* 318 */           Log.e("BluetoothService", "accept() failed", e);
-/* 319 */           break;
+          Log.e("BluetoothService", "accept() failed", e);
+           break;
         }
 
-/* 323 */         if (socket != null) {
-/* 324 */           synchronized (BluetoothService.this) {
-/* 325 */             switch (BluetoothService.this.mState)
+        if (socket != null) {
+          synchronized (BluetoothService.this) {
+            switch (BluetoothService.this.mState)
             {
             case 1:
             case 2:
-/* 329 */               BluetoothService.this.connected(socket, socket.getRemoteDevice());
-/* 330 */               break;
+              BluetoothService.this.connected(socket, socket.getRemoteDevice());
+               break;
             case 0:
             case 3:
               try
               {
-/* 335 */                 socket.close();
+                socket.close();
               } catch (IOException e) {
-/* 337 */                 Log.e("BluetoothService", "Could not close unwanted socket", e);
+                Log.e("BluetoothService", "Could not close unwanted socket", e);
               }
             }
           }
