@@ -160,7 +160,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 				this.cordova.getActivity().startActivityForResult(enableBluetooth, 0);
 			}
 			Set<BluetoothDevice> pairedDevices = mService.getPairedDev();
-			Log.d("Found these devices: "+pairedDevices.toString());
+			
 			if (pairedDevices.size() > 0) {
 				JSONArray json = new JSONArray();
 				for (BluetoothDevice device : pairedDevices) {
@@ -171,6 +171,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 					map.put("name", device.getName());
 					JSONObject jObj = new JSONObject(map);
 					*/
+					mWebView.loadUrl("javascript:console.log('Found this device: '"+device.getName()+"');");
 					json.put(device.getName());
 				}
 				callbackContext.success(json);
