@@ -145,11 +145,11 @@ public class BluetoothPrinter extends CordovaPlugin {
                 	mCallbackContext.success("Connect successful");
                     break;
                 case BluetoothService.STATE_CONNECTING: 
-                	Log.v(LOG_TAG, 'STATE_CONNECTING');
+                	Log.v(LOG_TAG, "STATE_CONNECTING");
                     break;
                 case BluetoothService.STATE_LISTEN:    
                 case BluetoothService.STATE_NONE:
-                	Log.v(LOG_TAG, 'STATE_NONE');
+                	Log.v(LOG_TAG, "STATE_NONE");
                     break;
                 }
                 break;
