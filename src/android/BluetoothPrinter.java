@@ -63,6 +63,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private LoggerHelper cordovaLog = new LoggerHelper();
 	public BluetoothPrinter() {}
+	public static final String LOG_TAG = "BluetoothPlugin";
 
 	@Override
 	public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -72,11 +73,8 @@ public class BluetoothPrinter extends CordovaPlugin {
     	Context ctx = cordova.getActivity().getApplicationContext();
     	mService = new BluetoothService(ctx, mHandler);
     	cordova.getThreadPool().execute(cordovaLog);
-    	try {
-    		cordovaLog.queue.put("Starting BT plugin");
-    	} catch (InterruptedException ex) {
-    	 	System.out.println("Cant even log...");
-    	}
+    	Log.v(LOG_TAG, "Starting BT plugin");
+    	
 	}
 
 	public void onDestroy() {
@@ -90,13 +88,21 @@ public class BluetoothPrinter extends CordovaPlugin {
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		this.mCallbackContext = callbackContext;
 		if (action.equals("list")) {
-			listBT(callbackContext);
-			return true;
+			 cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+					listBT(callbackContext);
+					return true;
+				}
+			});
 		} else if (action.equals("connect")) {
-			String name = args.getString(0);
-			BluetoothDevice device = mService.getDevByName(name);
-			mService.connect(device);
-			return true;
+			cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+					String name = args.getString(0);
+					BluetoothDevice device = mService.getDevByName(name);
+					mService.connect(device);
+					return true;
+				}
+			});
 		} else if (action.equals("disconnect")) {
             try {
                 disconnectBT(callbackContext);
@@ -139,11 +145,11 @@ public class BluetoothPrinter extends CordovaPlugin {
                 	mCallbackContext.success("Connect successful");
                     break;
                 case BluetoothService.STATE_CONNECTING: 
-                	//mWebView.loadUrl("javascript:console.log('STATE_CONNECTING');");
+                	Log.v(LOG_TAG, 'STATE_CONNECTING');
                     break;
                 case BluetoothService.STATE_LISTEN:    
                 case BluetoothService.STATE_NONE:
-                	//mWebView.loadUrl("javascript:console.log('STATE_NONE');");
+                	Log.v(LOG_TAG, 'STATE_NONE');
                     break;
                 }
                 break;
@@ -570,17 +576,5 @@ public class BluetoothPrinter extends CordovaPlugin {
 	}
 
 
-	class LoggerHelper extends Thread{
-	 //List<Object>  objs = "something" ;//init it
-	 BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
-	 public void run(){
-	     while(true){
-	       String msg;
-	       while ((msg = queue.poll()) != null) {
-	        webView.loadUrl("javascript:console.log('Plugin logger: "+msg+"');");
-	       }
-	       // do other stuff
-	     }
-	   }
-}
+
 }
