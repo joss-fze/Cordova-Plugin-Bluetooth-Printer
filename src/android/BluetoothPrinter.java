@@ -130,11 +130,11 @@ public class BluetoothPrinter extends CordovaPlugin {
                 	mCallbackContext.success("Connect successful");
                     break;
                 case BluetoothService.STATE_CONNECTING: 
-                	mWebView.loadUrl("javascript:console.log('STATE_CONNECTING');");
+                	//mWebView.loadUrl("javascript:console.log('STATE_CONNECTING');");
                     break;
                 case BluetoothService.STATE_LISTEN:    
                 case BluetoothService.STATE_NONE:
-                	mWebView.loadUrl("javascript:console.log('STATE_NONE');");
+                	//mWebView.loadUrl("javascript:console.log('STATE_NONE');");
                     break;
                 }
                 break;
@@ -171,7 +171,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 					map.put("name", device.getName());
 					JSONObject jObj = new JSONObject(map);
 					*/
-					mWebView.loadUrl("javascript:console.log('Found this device: '"+device.getName()+"');");
+					m//WebView.loadUrl("javascript:console.log('Found this device: '"+device.getName()+"');");
 					json.put(device.getName());
 				}
 				callbackContext.success(json);
