@@ -70,7 +70,6 @@ public class BluetoothPrinter extends CordovaPlugin {
     	this.mWebView = webView;
     	Context ctx = cordova.getActivity().getApplicationContext();
     	mService = new BluetoothService(ctx, mHandler);
-    	cordova.getThreadPool().execute(cordovaLog);
     	Log.v(LOG_TAG, "Starting BT plugin");
     	
 	}
