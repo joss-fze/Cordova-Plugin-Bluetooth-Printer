@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.Thread;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.List;
@@ -61,7 +62,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 	BluetoothService mService = null;
 	BluetoothDevice con_dev = null;
 	private static final int REQUEST_CONNECT_DEVICE = 1;
-	private final Boolean isConnecting = false;
+	private static Boolean isConnecting = false;
 
 	public BluetoothPrinter() {}
 
@@ -167,18 +168,18 @@ public class BluetoothPrinter extends CordovaPlugin {
                 public void run() {
                 	try {
 						JSONArray json = new JSONArray(args.getString(0));
-						String printerName = json.name;
-						String bitmap64 = json.args;
+						String printerName = json.getString("name");
+						String bitmap64 = json.getString("args");
 						Log.d(LOG_TAG, "Action is print bitmap to printer: "+printerName);
 						
-						if (mService.getState != 3) {
+						if (mService.getState() != 3) {
 							//not co0nnected. Connect first
 							isConnecting = true;
 							BluetoothDevice device = mService.getDevByName(printerName);
 							mService.connect(device);
 						}
 						while (isConnecting) {
-							sleep(5);
+							Thread.currentThread().sleep(5);
 						}
 
 					} catch (JSONException e) {
