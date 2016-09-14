@@ -168,8 +168,8 @@ public class BluetoothPrinter extends CordovaPlugin {
                 public void run() {
                 	try {
 						JSONArray json = new JSONArray(args.getString(0));
-						String printerName = json.getString("name");
-						String bitmap64 = json.getString("args");
+						String printerName = json.getString(0);
+						String bitmap64 = json.getString(1);
 						Log.d(LOG_TAG, "Action is print bitmap to printer: "+printerName);
 						
 						if (mService.getState() != 3) {
