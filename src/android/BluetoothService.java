@@ -310,10 +310,11 @@ public class BluetoothService
     }
 
     public void run() {
-/* 382 */       Log.i(LOG_TAG, "BEGIN mConnectThread");
-/* 383 */       setName("ConnectThread");
-
-/* 386 */       BluetoothService.this.mAdapter.cancelDiscovery();
+      Log.i(LOG_TAG, "BEGIN mConnectThread");
+      setName("ConnectThread");
+      if (BluetoothService.this.mAdapter.isDiscovering()) {
+        BluetoothService.this.mAdapter.cancelDiscovery();
+      }
       try
       {
 /* 392 */         this.mmSocket.connect();
