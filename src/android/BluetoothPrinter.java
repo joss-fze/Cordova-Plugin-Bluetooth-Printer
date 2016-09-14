@@ -61,6 +61,8 @@ public class BluetoothPrinter extends CordovaPlugin {
 	BluetoothService mService = null;
 	BluetoothDevice con_dev = null;
 	private static final int REQUEST_CONNECT_DEVICE = 1;
+	private final Boolean isConnecting = false;
+
 	public BluetoothPrinter() {}
 
 	@Override
@@ -159,6 +161,34 @@ public class BluetoothPrinter extends CordovaPlugin {
 			}
 			return true;
 		}
+		else if (action.equals("printBMP")) {
+			Log.v(LOG_TAG, "Received BT printBMP command");
+			cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                	try {
+						JSONArray json = new JSONArray(args.getString(0));
+						String printerName = json.name;
+						String bitmap64 = json.args;
+						Log.d(LOG_TAG, "Action is print bitmap to printer: "+printerName);
+						
+						if (mService.getState != 3) {
+							//not co0nnected. Connect first
+							isConnecting = true;
+							BluetoothDevice device = mService.getDevByName(printerName);
+							mService.connect(device);
+						}
+						while (isConnecting) {
+							sleep(5);
+						}
+
+					} catch (JSONException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    } 
+				}
+			});
+			return true;
+		}
         else if (action.equals("printPOSCommand")) {
 			try {
 				String msg = args.getString(0);
@@ -179,10 +209,12 @@ public class BluetoothPrinter extends CordovaPlugin {
             case BluetoothService.MESSAGE_STATE_CHANGE:
                 switch (msg.arg1) {
                 case BluetoothService.STATE_CONNECTED:   
+                	isConnecting = false;
                 	mCallbackContext.success("Connect successful");
                     break;
                 case BluetoothService.STATE_CONNECTING: 
                 	Log.v(LOG_TAG, "STATE_CONNECTING");
+                	isConnecting = true;
                     break;
                 case BluetoothService.STATE_LISTEN:    
                 case BluetoothService.STATE_NONE:
@@ -192,10 +224,11 @@ public class BluetoothPrinter extends CordovaPlugin {
                 break;
             case BluetoothService.MESSAGE_CONNECTION_LOST:   
                 mCallbackContext.success("Device connection was lost");
-
+                isConnecting = false;
                 break;
             case BluetoothService.MESSAGE_UNABLE_CONNECT:    
             	mCallbackContext.error("Unable to connect device");
+            	isConnecting = false;
             	break;
             }
         }
