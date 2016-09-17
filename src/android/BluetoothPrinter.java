@@ -142,7 +142,10 @@ public class BluetoothPrinter extends CordovaPlugin {
 					} catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
-                    } 
+                    }  catch (InterruptedException ie) {
+                    	Log.e(LOG_TAG, "execute: Got Thread interuption Exception " + ie.getMessage());
+                        callbackContext.error(ie.getMessage());
+                    }
 				}
 			});
 			return true;
@@ -471,7 +474,7 @@ public class BluetoothPrinter extends CordovaPlugin {
         return send;
     }
 
-    public byte[] getBitmapBytes(String bitmap64) {
+    public byte[] getBitmapBytes(String 	bitmap64) {
 
     }
 
