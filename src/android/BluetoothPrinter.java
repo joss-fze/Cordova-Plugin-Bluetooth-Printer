@@ -135,6 +135,10 @@ public class BluetoothPrinter extends CordovaPlugin {
 						String name = args.getString(0);
 						BluetoothDevice device = mService.getDevByName(name);
 						mService.connect(device);
+						while (isConnecting) {
+							Thread.currentThread().sleep(5);
+						}
+						mCallbackContext.success("Connect successful");
 					} catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
@@ -180,7 +184,9 @@ public class BluetoothPrinter extends CordovaPlugin {
 						while (isConnecting) {
 							Thread.currentThread().sleep(5);
 						}
-
+						Log.d(LOG_TAG, "Printer is connected: "+printerName+" sending bitmap");
+						byte[] buffer = getBitmapBytes(bitmap64);
+						mService.write(buffer);
 					} catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
                         callbackContext.error(e.getMessage());
@@ -213,7 +219,7 @@ public class BluetoothPrinter extends CordovaPlugin {
                 switch (msg.arg1) {
                 case BluetoothService.STATE_CONNECTED:   
                 	isConnecting = false;
-                	mCallbackContext.success("Connect successful");
+                	
                     break;
                 case BluetoothService.STATE_CONNECTING: 
                 	Log.v(LOG_TAG, "STATE_CONNECTING");
@@ -464,6 +470,11 @@ public class BluetoothPrinter extends CordovaPlugin {
         }
         return send;
     }
+
+    public byte[] getBitmapBytes(String bitmap64) {
+
+    }
+
 
     public static byte[] hexStringToBytes(String hexString) {
         hexString = hexString.toLowerCase();
