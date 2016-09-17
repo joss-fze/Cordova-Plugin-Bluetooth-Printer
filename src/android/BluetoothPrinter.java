@@ -168,6 +168,35 @@ public class BluetoothPrinter extends CordovaPlugin {
 				e.printStackTrace();
 			}
 			return true;
+		} else if (action.equals("paperFeed")) {
+			Log.v(LOG_TAG, "Received BT paperFeed command");
+			cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                	try {
+						String name = args.getString(0);
+						byte lineNo = Integer.parseInt(args.getString(1)).byteValue();
+						BluetoothDevice device = mService.getDevByName(name);
+						mService.connect(device);
+						while (isConnecting) {
+							Thread.currentThread().sleep(5);
+						}
+						byte[] paperFeedCode;
+						paperFeedCode[0] = 27;
+						paperFeedCode[1] = 100;
+						paperFeedCode[2] = lineNo;
+						mService.write(paperFeedCode);
+						mCallbackContext.success("Paper feed successful");
+					} catch (JSONException e) {
+                        Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
+                        callbackContext.error(e.getMessage());
+                    }  catch (InterruptedException ie) {
+                    	Log.e(LOG_TAG, "execute: Got Thread interuption Exception " + ie.getMessage());
+                        callbackContext.error(ie.getMessage());
+                    }
+				}
+			});
+			return true;
+
 		}
 		else if (action.equals("printBMP")) {
 			Log.v(LOG_TAG, "Received BT printBMP command");
