@@ -476,6 +476,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 
     public byte[] getBitmapBytes(String 	bitmap64) {
 
+    	return null;
     }
 
 
