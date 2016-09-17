@@ -174,7 +174,7 @@ public class BluetoothPrinter extends CordovaPlugin {
                 public void run() {
                 	try {
 						String name = args.getString(0);
-						byte lineNo = Integer.parseInt(args.getString(1)).byteValue();
+						Integer lineNo = Integer.parseInt(args.getString(1));
 						BluetoothDevice device = mService.getDevByName(name);
 						mService.connect(device);
 						while (isConnecting) {
