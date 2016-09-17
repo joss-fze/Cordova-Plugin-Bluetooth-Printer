@@ -189,6 +189,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 						}
 						Log.d(LOG_TAG, "Printer is connected: "+printerName+" sending bitmap");
 						byte[] buffer = Base64.decode(bitmap64,Base64.DEFAULT);
+						Log.d(LOG_TAG, "Sending data to printer: "+printerName);
 						mService.write(buffer);
 					} catch (JSONException e) {
                         Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
