@@ -183,7 +183,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 						byte[] paperFeedCode;
 						paperFeedCode[0] = 27;
 						paperFeedCode[1] = 100;
-						paperFeedCode[2] = lineNo;
+						paperFeedCode[2] = lineNo.byteValue();
 						mService.write(paperFeedCode);
 						mCallbackContext.success("Paper feed successful");
 					} catch (JSONException e) {
