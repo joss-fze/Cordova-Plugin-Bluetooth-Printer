@@ -218,6 +218,10 @@ public class BluetoothPrinter extends CordovaPlugin {
 							Thread.currentThread().sleep(5);
 						}
 						byte[] cmd = new byte[3];
+						cmd[0] = 0x1b;
+        	    		cmd[1] = 0x40;
+        	    		//reset the printer
+        	    		mService.write(cmd);
         	    		cmd[0] = 0x1b;
         	    		cmd[1] = 0x21;	
             			cmd[2] |= 0x10;
