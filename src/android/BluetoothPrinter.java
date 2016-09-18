@@ -268,6 +268,9 @@ public class BluetoothPrinter extends CordovaPlugin {
                 mCallbackContext.success("Device connection was lost");
                 isConnecting = false;
                 break;
+             case BluetoothService.MESSAGE_WRITE:    
+             	Log.v(LOG_TAG, "Writing data to socket");
+            	break;
             case BluetoothService.MESSAGE_UNABLE_CONNECT:    
             	mCallbackContext.error("Unable to connect device");
             	isConnecting = false;
