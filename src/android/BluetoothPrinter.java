@@ -234,6 +234,10 @@ public class BluetoothPrinter extends CordovaPlugin {
 						Log.d(LOG_TAG, "the first command bytes are: "+new Byte(buffer[0]).toString()+" "+new Byte(buffer[1]).toString()+" "+new Byte(buffer[2]).toString()+" "+new Byte(buffer[3]).toString()+" ");
 						Log.d(LOG_TAG, "Sending  data to printer: "+printerName);
 						mService.write(buffer);
+						cmd[0] = 0x1b;
+        	    		cmd[1] = 0x4A;
+        	    		//print buffer and feed the printer
+        	    		mService.write(cmd);
 						mService.sendMessage("Bitmap test complete!\n", "GBK"); 
             			cmd[2] &= 0xEF;
             			mService.write(cmd);
