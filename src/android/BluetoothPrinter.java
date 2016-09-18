@@ -218,7 +218,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 						}
 						Log.d(LOG_TAG, "Printer is connected: "+printerName+" sending bitmap");
 						byte[] buffer = Base64.decode(bitmap64,Base64.DEFAULT);
-						Log.d(LOG_TAG, "the first command bytes are: "+byte[0].toString()+" "+byte[1].toString()+" "+byte[2].toString()+" "+byte[3].toString()+" ");
+						Log.d(LOG_TAG, "the first command bytes are: "+buffer[0].toString()+" "+buffer[1].toString()+" "+buffer[2].toString()+" "+buffer[3].toString()+" ");
 						Log.d(LOG_TAG, "Sending "+buffer.getLength()+" bytes of data to printer: "+printerName);
 						mService.write(buffer);
 					} catch (JSONException e) {
