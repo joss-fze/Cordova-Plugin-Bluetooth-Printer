@@ -9,7 +9,7 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.List;
 import java.util.UUID;
-import java.lang.Integer;
+import java.lang.Byte;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -219,7 +219,7 @@ public class BluetoothPrinter extends CordovaPlugin {
 						}
 						Log.d(LOG_TAG, "Printer is connected: "+printerName+" sending bitmap");
 						byte[] buffer = Base64.decode(bitmap64,Base64.DEFAULT);
-						Log.d(LOG_TAG, "the first command bytes are: "+Integer(buffer[0]).toString()+" "+Integer(buffer[1]).toString()+" "+Integer(buffer[2]).toString()+" "+Integer(buffer[3]).toString()+" ");
+						Log.d(LOG_TAG, "the first command bytes are: "+Byte(buffer[0]).toString()+" "+Byte(buffer[1]).toString()+" "+Byte(buffer[2]).toString()+" "+Byte(buffer[3]).toString()+" ");
 						Log.d(LOG_TAG, "Sending  data to printer: "+printerName);
 						mService.write(buffer);
 					} catch (JSONException e) {
